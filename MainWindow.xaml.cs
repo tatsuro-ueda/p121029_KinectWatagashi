@@ -80,7 +80,7 @@ namespace p121029_KinectWatagashi
 
             FallingRect f = new FallingRect(this, 50);
             f.X = 50;
-            f.Y = 50;
+            f.Y = 20;
             fallingRects = new FallingRect[] { f };
             f.drawForward();
 

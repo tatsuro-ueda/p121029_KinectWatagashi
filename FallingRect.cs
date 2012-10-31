@@ -5,16 +5,17 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace p121029_KinectWatagashi
 {
     class FallingRect
     {
         // 定数
-        const int FALLING_RECTANGLE_WIDTH = 250;
-        const int FALLING_RECTANGLE_WEIGHT = 20;
-        const int FALLING_RECTANGLE_DEPTH = 40;
-        const int FALLING_RECTANGLE_NUMBER = 10;
+        const int FALLING_RECTANGLE_WIDTH = 100;
+        const int FALLING_RECTANGLE_WEIGHT = 10;
+        const int FALLING_RECTANGLE_DEPTH = 20;
+        const int FALLING_RECTANGLE_NUMBER = 50;
         
         // メンバ変数
         MainWindow mainWindow;
@@ -62,17 +63,56 @@ namespace p121029_KinectWatagashi
             }
         }
 
-        public void drawForward() {
-            mainWindow.fallingRectFore.Children.Clear();
-            mainWindow.fallingRectFore.Children.Add(new Line()
+        // 線分を描く
+        public void line(Canvas canvas, Color color, int weight, int x1, int y1, int x2, int y2)
+        {
+            canvas.Children.Add(new Line()
             {
-                Stroke = new SolidColorBrush(Colors.Red),
+                Stroke = new SolidColorBrush(color),
                 StrokeThickness = weight,
-                X1 = X, 
-                Y1 = Y,
-                X2 = X + width, 
-                Y2 = Y
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2
             });
+        }
+
+        // 後ろ側の線分を描く
+        public void drawBack()
+        {
+            mainWindow.fallingRectBack.Children.Clear();
+            line(mainWindow.fallingRectBack, Colors.Red, weight,
+                X,
+                Y,
+                X + FALLING_RECTANGLE_DEPTH,
+                Y - FALLING_RECTANGLE_DEPTH);
+
+            line(mainWindow.fallingRectBack, Colors.Red, weight,
+                X + FALLING_RECTANGLE_DEPTH,
+                Y - FALLING_RECTANGLE_DEPTH,
+                X + width - FALLING_RECTANGLE_DEPTH,
+                Y - FALLING_RECTANGLE_DEPTH);
+
+            line(mainWindow.fallingRectBack, Colors.Red, weight,
+                X + width - FALLING_RECTANGLE_DEPTH,
+                Y - FALLING_RECTANGLE_DEPTH,
+                X + width,
+                Y);
+        }
+
+        public void drawForward()
+        {
+            mainWindow.fallingRectFore.Children.Clear();
+            line(mainWindow.fallingRectFore, Colors.Red, weight, X, Y, X + width, Y);
+            //mainWindow.fallingRectFore.Children.Add(new Line()
+            //{
+            //    Stroke = new SolidColorBrush(Colors.Red),
+            //    StrokeThickness = weight,
+            //    X1 = X, 
+            //    Y1 = Y,
+            //    X2 = X + width, 
+            //    Y2 = Y
+            //});
             Debug.WriteLine("drawForward executed");
         }
   
@@ -107,6 +147,7 @@ namespace p121029_KinectWatagashi
 
         internal void update()
         {
+            this.drawBack();
             this.drawForward();
             Y += 1;
         }

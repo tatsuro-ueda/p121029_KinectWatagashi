@@ -4,6 +4,9 @@
         Title="MainWindow" Height="350" Width="525"
         HorizontalContentAlignment="Center" Closing="Window_Closing">
     <Grid>
+        <Canvas Name="fallingRectBack"
+                Width="{Binding ElementName=imageRgb, Path=ActualWidth}"
+                Height="{Binding ElementName=imageRgb, Path=ActualHeight}"/>
         <Image Name="imageRgb" Stretch="Uniform"/>
         <Canvas Name="canvasSkeleton" 
                 Width="{Binding ElementName=imageRgb, Path=ActualWidth}"
