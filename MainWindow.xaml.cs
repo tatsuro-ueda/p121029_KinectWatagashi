@@ -29,8 +29,8 @@ namespace p121029_KinectWatagashi
         }
 
         // コントローラーの設定
-        CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.GAMEPAD;
-        //CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.KINECT;
+        //CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.GAMEPAD;
+        CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.KINECT;
 
         enum PHASE
         {
@@ -78,9 +78,7 @@ namespace p121029_KinectWatagashi
              * テスト
              */
 
-            FallingRect f = new FallingRect(this, 50);
-            f.X = 50;
-            f.Y = 20;
+            FallingRect f = new FallingRect(this, -200);
             fallingRects = new FallingRect[] { f };
             f.drawForward();
 

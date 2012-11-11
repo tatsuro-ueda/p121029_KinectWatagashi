@@ -18,6 +18,8 @@ namespace p121029_KinectWatagashi
         Point jointLeftShoulder;
         CoordinateMapper coodinateMapper;
 
+        readonly int Bgr32BytesPerPixel = PixelFormats.Bgr32.BitsPerPixel / 8;
+
         public Kinect(MainWindow m)
         {
             mainWindow = m;
@@ -34,17 +36,103 @@ namespace p121029_KinectWatagashi
         public void start()
         {
             kinect.ColorStream.Enable();
-            kinect.ColorFrameReady +=
-                new EventHandler<ColorImageFrameReadyEventArgs>(
-                    kinect_ColorFrameReady);
-
-            // スケルトンを有効にして、フレーム更新イベントを登録する
+            kinect.DepthStream.Enable();
             kinect.SkeletonStream.Enable();
-            kinect.SkeletonFrameReady +=
-                new EventHandler<SkeletonFrameReadyEventArgs>(
-                    kinect_SkeletonFrameReady);
+
+            kinect.AllFramesReady +=new EventHandler<AllFramesReadyEventArgs>(kinect_AllFramesReady);
+
+            //kinect.ColorFrameReady +=
+            //    new EventHandler<ColorImageFrameReadyEventArgs>(
+            //        kinect_ColorFrameReady);
+
+            //// スケルトンを有効にして、フレーム更新イベントを登録する
+            //kinect.SkeletonFrameReady +=
+            //    new EventHandler<SkeletonFrameReadyEventArgs>(
+            //        kinect_SkeletonFrameReady);
 
             kinect.Start();
+        }
+
+        public void kinect_AllFramesReady(object sender, AllFramesReadyEventArgs e)
+        {
+            try
+            {
+                // Kinectのインスタンスを取得する
+                KinectSensor kinect = sender as KinectSensor;
+                if (kinect == null)
+                {
+                    return;
+                }
+
+                // 背景をマスクした画像を描画する
+                using (ColorImageFrame colorFrame = e.OpenColorImageFrame())
+                {
+                    using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
+                    {
+                        if ((colorFrame != null) && (depthFrame != null))
+                        {
+                            mainWindow.imageRgb.Source = BitmapSource.Create(colorFrame.Width,
+                                colorFrame.Height, 96, 96, PixelFormats.Bgr32, null,
+                                BackgroundMask(kinect, colorFrame, depthFrame),
+                                colorFrame.Width * colorFrame.BytesPerPixel);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private byte[] BackgroundMask(KinectSensor kinect,
+            ColorImageFrame colorFrame, DepthImageFrame depthFrame)
+        {
+            ColorImageStream colorStream = kinect.ColorStream;
+            DepthImageStream depthStream = kinect.DepthStream;
+
+            // RGBカメラのピクセルごとのデータを取得する
+            byte[] colorPixel = new byte[colorFrame.PixelDataLength];
+            colorFrame.CopyPixelDataTo(colorPixel);
+
+            // 距離カメラのピクセルごとのデータを取得する
+            short[] depthPixel = new short[depthFrame.PixelDataLength];
+            depthFrame.CopyPixelDataTo(depthPixel);
+
+            // 距離カメラの座標に対応するRGBカメラの座標を取得する（座標合わせ）
+            ColorImagePoint[] colorPoint =
+                new ColorImagePoint[depthFrame.PixelDataLength];
+            kinect.MapDepthFrameToColorFrame(depthStream.Format, depthPixel,
+                colorStream.Format, colorPoint);
+
+            // 出力バッファ
+            byte[] outputColor = new byte[colorPixel.Length];
+            for (int i = 0; i < outputColor.Length; i += Bgr32BytesPerPixel)
+            {
+                outputColor[i] = 255;
+                outputColor[i + 1] = 255;
+                outputColor[i + 2] = 255;
+            }
+
+            for (int index = 0; index < depthPixel.Length; index++)
+            {
+                // プレイヤーを取得する
+                int player = depthPixel[index] & DepthImageFrame.PlayerIndexBitmask;
+
+                // 変換した結果がフレームサイズを超えることがあるため、小さい方を使う
+                int x = Math.Min(colorPoint[index].X, colorStream.FrameWidth - 1);
+                int y = Math.Min(colorPoint[index].Y, colorStream.FrameHeight - 1);
+                int colorIndex = ((y * depthFrame.Width) + x) * Bgr32BytesPerPixel;
+
+                // プレイヤーを検出した座標だけ、RGBカメラの画像を使う
+                if (player != 0)
+                {
+                    outputColor[colorIndex] = colorPixel[colorIndex];
+                    outputColor[colorIndex + 1] = colorPixel[colorIndex + 1];
+                    outputColor[colorIndex + 2] = colorPixel[colorIndex + 2];
+                }
+            }
+            return outputColor;
         }
 
         public void kinect_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)

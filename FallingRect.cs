@@ -12,24 +12,24 @@ namespace p121029_KinectWatagashi
     class FallingRect
     {
         // 定数
-        const int FALLING_RECTANGLE_WIDTH = 100;
-        const int FALLING_RECTANGLE_WEIGHT = 10;
-        const int FALLING_RECTANGLE_DEPTH = 20;
-        const int FALLING_RECTANGLE_NUMBER = 50;
+        const int FALLING_RECTANGLE_WIDTH = 400;
+        const int FALLING_RECTANGLE_WEIGHT = 20;
+        const int FALLING_RECTANGLE_DEPTH = 100;
+        const int FALLING_RECTANGLE_NUMBER = 200;
+        const int FALLING_RECTANGLE_SPEED = 1;
         
         // メンバ変数
         MainWindow mainWindow;
-        public int X;
-        public int Y;
-        public int width = FALLING_RECTANGLE_WIDTH;
-        public int weight = FALLING_RECTANGLE_WEIGHT;
+        int X;
+        int Y;
+        int width = FALLING_RECTANGLE_WIDTH;
+        int weight = FALLING_RECTANGLE_WEIGHT;
         Color clr;
         String clrName;
         int hitCounter = 0;
         bool isFlyingRight;
         bool isFallingAroundYou = false;
         int getCounter = 0;
-        private int p;
 
         // コンストラクタ
         public FallingRect(MainWindow m, int oldX)
@@ -39,10 +39,14 @@ namespace p121029_KinectWatagashi
 
             // xをランダムに決める
             int newX;
-                Random rnd = new Random();
-            do {
-                newX = oldX + rnd.Next(200) - 100;
-            } while ( newX < 0 | 440 < newX | Math.Abs(newX - oldX) < 50);
+            Random rnd = new Random();
+            do
+            {
+                newX = oldX + rnd.Next(1600) - 800;
+            } while (newX + width / 2 < -500 | // 枠の中心の座標は-500より大きい
+                500 < newX + width / 2 | // 枠の中心の座標は500より小さい
+                Math.Abs(newX - oldX) < 200); // 前回の落ちた場所との差（絶対値）は200より小さい
+            Debug.WriteLine(newX);
             X = newX;
 
             // 色を決める
@@ -56,7 +60,6 @@ namespace p121029_KinectWatagashi
                 clrName = "green";
                 break;
               case 2:
-              case 3:
                 clr = Colors.Blue;
                 clrName = "blue";
                 break;
@@ -77,43 +80,38 @@ namespace p121029_KinectWatagashi
             });
         }
 
-        // 後ろ側の線分を描く
+        // 人物の後ろ側の線分を描く
         public void drawBack()
         {
             mainWindow.fallingRectBack.Children.Clear();
-            line(mainWindow.fallingRectBack, Colors.Red, weight,
+
+            // 「／」
+            line(mainWindow.fallingRectBack, clr, weight,
                 X,
                 Y,
                 X + FALLING_RECTANGLE_DEPTH,
                 Y - FALLING_RECTANGLE_DEPTH);
 
-            line(mainWindow.fallingRectBack, Colors.Red, weight,
+            // 「─」（後ろ）
+            line(mainWindow.fallingRectBack, clr, weight,
                 X + FALLING_RECTANGLE_DEPTH,
                 Y - FALLING_RECTANGLE_DEPTH,
                 X + width - FALLING_RECTANGLE_DEPTH,
                 Y - FALLING_RECTANGLE_DEPTH);
 
-            line(mainWindow.fallingRectBack, Colors.Red, weight,
+            // 「＼」
+            line(mainWindow.fallingRectBack, clr, weight,
                 X + width - FALLING_RECTANGLE_DEPTH,
                 Y - FALLING_RECTANGLE_DEPTH,
                 X + width,
                 Y);
         }
 
+        // 人物の手前の線分を描く
         public void drawForward()
         {
             mainWindow.fallingRectFore.Children.Clear();
-            line(mainWindow.fallingRectFore, Colors.Red, weight, X, Y, X + width, Y);
-            //mainWindow.fallingRectFore.Children.Add(new Line()
-            //{
-            //    Stroke = new SolidColorBrush(Colors.Red),
-            //    StrokeThickness = weight,
-            //    X1 = X, 
-            //    Y1 = Y,
-            //    X2 = X + width, 
-            //    Y2 = Y
-            //});
-            Debug.WriteLine("drawForward executed");
+            line(mainWindow.fallingRectFore, clr, weight, X, Y, X + width, Y);
         }
   
         //void drawScoringVE(bool isHandUp) {
@@ -149,7 +147,8 @@ namespace p121029_KinectWatagashi
         {
             this.drawBack();
             this.drawForward();
-            Y += 1;
+            Y += FALLING_RECTANGLE_SPEED;
         }
+
     }
 }

@@ -8,10 +8,10 @@
                 Width="{Binding ElementName=imageRgb, Path=ActualWidth}"
                 Height="{Binding ElementName=imageRgb, Path=ActualHeight}"/>
         <Image Name="imageRgb" Stretch="Uniform"/>
-        <Canvas Name="canvasSkeleton" 
+        <Canvas Name="fallingRectFore"
                 Width="{Binding ElementName=imageRgb, Path=ActualWidth}"
                 Height="{Binding ElementName=imageRgb, Path=ActualHeight}"/>
-        <Canvas Name="fallingRectFore"
+        <Canvas Name="canvasSkeleton" 
                 Width="{Binding ElementName=imageRgb, Path=ActualWidth}"
                 Height="{Binding ElementName=imageRgb, Path=ActualHeight}"/>
     </Grid>
