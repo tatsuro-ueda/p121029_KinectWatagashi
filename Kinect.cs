@@ -72,12 +72,25 @@ namespace p121029_KinectWatagashi
                         if ((colorFrame != null) && (depthFrame != null))
                         {
                             mainWindow.imageRgb.Source = BitmapSource.Create(colorFrame.Width,
-                                colorFrame.Height, 96, 96, PixelFormats.Bgr32, null,
+                                colorFrame.Height, 96, 96, PixelFormats.Bgra32, null,
                                 BackgroundMask(kinect, colorFrame, depthFrame),
                                 colorFrame.Width * colorFrame.BytesPerPixel);
+                            
                         }
                     }
                 }
+
+                //
+                // デバッグ用：関節のマーカー
+                //
+                using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
+                {
+                    if (skeletonFrame != null)
+                    {
+                        DrawSkeleton(kinect, skeletonFrame);
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -112,6 +125,7 @@ namespace p121029_KinectWatagashi
                 outputColor[i] = 255;
                 outputColor[i + 1] = 255;
                 outputColor[i + 2] = 255;
+                outputColor[i + 3] = 0;
             }
 
             for (int index = 0; index < depthPixel.Length; index++)
@@ -130,53 +144,10 @@ namespace p121029_KinectWatagashi
                     outputColor[colorIndex] = colorPixel[colorIndex];
                     outputColor[colorIndex + 1] = colorPixel[colorIndex + 1];
                     outputColor[colorIndex + 2] = colorPixel[colorIndex + 2];
+                    outputColor[colorIndex + 3] = 255;
                 }
             }
             return outputColor;
-        }
-
-        public void kinect_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
-        {
-            try
-            {
-                using (ColorImageFrame colorFrame = e.OpenColorImageFrame())
-                {
-                    if (colorFrame != null)
-                    {
-                        // RGBカメラのフレームデータを取得する
-                        byte[] colorPixel = new byte[colorFrame.PixelDataLength];
-                        colorFrame.CopyPixelDataTo(colorPixel);
-
-                        // ピクセルデータをビットマップに変換する
-
-                        mainWindow.imageRgb.Source = BitmapSource.Create(colorFrame.Width,
-                            colorFrame.Height, 96, 96, PixelFormats.Bgr32, null,
-                            colorPixel, colorFrame.Width * colorFrame.BytesPerPixel);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        void kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
-        {
-            try
-            {
-                using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
-                {
-                    if (skeletonFrame != null)
-                    {
-                        DrawSkeleton(kinect, skeletonFrame);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
 
         private void DrawSkeleton(KinectSensor kinect, SkeletonFrame skeletonFrame)
@@ -185,7 +156,7 @@ namespace p121029_KinectWatagashi
             Skeleton[] skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
             skeletonFrame.CopySkeletonDataTo(skeletons);
 
-            mainWindow.canvasSkeleton.Children.Clear();
+            mainWindow.canvasGamePad.Children.Clear();
 
             // トラッキングされているスケルトンのジョイントを描画する
             foreach (Skeleton skeleton in skeletons)
@@ -231,12 +202,12 @@ namespace p121029_KinectWatagashi
 
             // 座標を画面のサイズに変換する
             point.X = (int)ScaleTo(point.X, kinect.ColorStream.FrameWidth,
-                mainWindow.canvasSkeleton.Width);
+                mainWindow.canvasGamePad.Width);
             point.Y = (int)ScaleTo(point.Y, kinect.ColorStream.FrameHeight,
-                mainWindow.canvasSkeleton.Height);
+                mainWindow.canvasGamePad.Height);
 
             // 円を描く
-            mainWindow.canvasSkeleton.Children.Add(new Ellipse()
+            mainWindow.canvasGamePad.Children.Add(new Ellipse()
             {
                 Fill = new SolidColorBrush(Colors.Red),
                 Margin = new Thickness(point.X - R, point.Y - R, 0, 0),
@@ -259,5 +230,54 @@ namespace p121029_KinectWatagashi
         {
             return jointLeftShoulder;
         }
+
+        //
+        // 以下は未使用
+        //
+
+        public void kinect_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
+        {
+            try
+            {
+                using (ColorImageFrame colorFrame = e.OpenColorImageFrame())
+                {
+                    if (colorFrame != null)
+                    {
+                        // RGBカメラのフレームデータを取得する
+                        byte[] colorPixel = new byte[colorFrame.PixelDataLength];
+                        colorFrame.CopyPixelDataTo(colorPixel);
+
+                        // ピクセルデータをビットマップに変換する
+
+                        mainWindow.imageRgb.Source = BitmapSource.Create(colorFrame.Width,
+                            colorFrame.Height, 96, 96, PixelFormats.Bgra32, null,
+                            colorPixel, colorFrame.Width * colorFrame.BytesPerPixel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        void kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
+        {
+            try
+            {
+                using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
+                {
+                    if (skeletonFrame != null)
+                    {
+                        DrawSkeleton(kinect, skeletonFrame);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
     }
 }

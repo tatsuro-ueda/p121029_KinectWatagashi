@@ -29,8 +29,8 @@ namespace p121029_KinectWatagashi
         }
 
         // コントローラーの設定
-        //CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.GAMEPAD;
-        CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.KINECT;
+        CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.GAMEPAD;
+        //CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.KINECT;
 
         enum PHASE
         {
@@ -40,6 +40,7 @@ namespace p121029_KinectWatagashi
         PHASE phase;
 
         Kinect k;
+        GamePad g;
         DispatcherTimer dispatcherTimer;
         FallingRect[] fallingRects;
 
@@ -59,6 +60,7 @@ namespace p121029_KinectWatagashi
                     break;
                 case CONTROLLER_DEVICE.GAMEPAD:
                     // ゲームパッドの初期化
+                    g = new GamePad(this);
                     break;
             }
 

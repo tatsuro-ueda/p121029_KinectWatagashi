@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="ControllerDevice.cs" />
     <Compile Include="FallingRect.cs" />
+    <Compile Include="GamePad.cs" />
     <Compile Include="Kinect.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
