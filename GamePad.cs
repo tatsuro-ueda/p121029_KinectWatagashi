@@ -17,37 +17,58 @@ namespace p121029_KinectWatagashi
         Point jointRightShoulder;
         Point jointLeftShoulder;
 
+        Color clr;
+        int weight;
+
         public GamePad(MainWindow m)
         {
             mainWindow = m;
             int x = -100;
             int y = 0;
-            int width = 200;
+            width = 200;
+
+            clr = Colors.Black;
+            weight = 20;
 
             DrawRect(x, y);
         }
 
+        // 線分を描く
+        public void line(Canvas canvas, Color color, int weight, int x1, int y1, int x2, int y2)
+        {
+            canvas.Children.Add(new Line()
+            {
+                Stroke = new SolidColorBrush(color),
+                StrokeThickness = weight,
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2
+            });
+        }
+
         void DrawRect(int x, int y)
         {
-            // Create a Rectangle
-            Rectangle blueRectangle = new Rectangle();
-            blueRectangle.Height = 100;
-            blueRectangle.Width = 200;
+            mainWindow.canvasGamePad.Children.Clear();
+            line(mainWindow.canvasGamePad, clr, weight,
+                x,
+                y,
+                x + width,
+                y);
 
-            // Create a blue and a black Brush
-            SolidColorBrush blueBrush = new SolidColorBrush();
-            blueBrush.Color = Colors.Blue;
-            SolidColorBrush blackBrush = new SolidColorBrush();
-            blackBrush.Color = Colors.Black;
+            mainWindow.canvasGamePad.Children.Clear();
+            line(mainWindow.canvasGamePad, clr, weight,
+                x,
+                y,
+                x,
+                y - 500);
 
-            // Set Rectangle's width and color
-            blueRectangle.StrokeThickness = 4;
-            blueRectangle.Stroke = blackBrush;
-            // Fill rectangle with blue color
-            blueRectangle.Fill = blueBrush;
-
-            // Add Rectangle to the Grid.
-            mainWindow.canvasGamePad.Children.Add(blueRectangle);
+            mainWindow.canvasGamePad.Children.Clear();
+            line(mainWindow.canvasGamePad, clr, weight,
+                x + width,
+                y,
+                x + width,
+                y - 500);
         }
 
         public Point getRightTop()
