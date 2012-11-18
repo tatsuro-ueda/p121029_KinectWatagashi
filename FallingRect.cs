@@ -20,9 +20,9 @@ namespace p121029_KinectWatagashi
         
         // メンバ変数
         MainWindow mainWindow;
-        int X;
-        int Y;
-        int width = FALLING_RECTANGLE_WIDTH;
+        public int X;
+        public int Y;
+        public int width = FALLING_RECTANGLE_WIDTH;
         int weight = FALLING_RECTANGLE_WEIGHT;
         Color clr;
         String clrName;
@@ -30,6 +30,12 @@ namespace p121029_KinectWatagashi
         bool isFlyingRight;
         bool isFallingAroundYou = false;
         int getCounter = 0;
+
+        public enum STATE
+        {
+            NORMAL, FALLING_AROUND_YOU, FLYING_RIGHT, FLYING_LEFT
+        }
+        public STATE state;
 
         // コンストラクタ
         public FallingRect(MainWindow m, int oldX)

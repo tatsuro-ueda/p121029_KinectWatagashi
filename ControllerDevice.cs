@@ -10,5 +10,7 @@ namespace p121029_KinectWatagashi
     {
         Point getRightTop();
         Point getLeftTop();
+
+        void start();
     }
 }

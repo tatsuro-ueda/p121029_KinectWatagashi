@@ -29,8 +29,8 @@ namespace p121029_KinectWatagashi
         }
 
         // コントローラーの設定
-        CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.GAMEPAD;
-        //CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.KINECT;
+        //CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.GAMEPAD;
+        CONTROLLER_DEVICE controllerDevice = CONTROLLER_DEVICE.KINECT;
 
         enum PHASE
         {
@@ -39,10 +39,10 @@ namespace p121029_KinectWatagashi
         }
         PHASE phase;
 
-        Kinect k;
-        GamePad g;
+        ControllerDevice c;
         DispatcherTimer dispatcherTimer;
         FallingRect[] fallingRects;
+        Judge j;
 
         public MainWindow()
         {
@@ -56,25 +56,17 @@ namespace p121029_KinectWatagashi
             switch(controllerDevice)
             {
                 case CONTROLLER_DEVICE.KINECT:
-                    k = new Kinect(this);
+                    c = new Kinect(this);
                     break;
                 case CONTROLLER_DEVICE.GAMEPAD:
                     // ゲームパッドの初期化
-                    g = new GamePad(this);
+                    c = new GamePad(this);
                     break;
             }
 
+            j = new Judge();
             InitializeComponent();
-
-            switch(controllerDevice)
-            {
-                case CONTROLLER_DEVICE.KINECT:
-                    k.start();
-                    break;
-                case CONTROLLER_DEVICE.GAMEPAD:
-                    // ゲームパッドの開始
-                    break;
-            }
+            c.start();
 
             /*
              * テスト
@@ -103,6 +95,7 @@ namespace p121029_KinectWatagashi
                 case PHASE.PLAYING:
                     foreach (FallingRect f in fallingRects)
                     {
+                        j.doJudge(c.getLeftTop, c.getRightTop, f);
                         f.update();
                     }
                     break;
