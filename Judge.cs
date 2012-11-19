@@ -9,16 +9,22 @@ using System.Diagnostics;
 
 namespace p121029_KinectWatagashi
 {
+    /*
+     * 衝突判定
+     */
     class Judge
     {
+        // 定数
+        const int BOTTOM_END = -350;
+
         public Judge()
         {
         }
 
         public void doJudge(Point leftTop, Point rightTop, FallingRect fallingRect)
         {
-            // 輪っかのy軸は人物の高さより低く、かつ
-            if (leftTop.Y <= fallingRect.X)
+            // 輪っかのy軸は人物の高さより低く、かつ下端より高い
+            if (leftTop.Y <= fallingRect.X & fallingRect.Y >= BOTTOM_END)
             {
                 // 輪っかが人物の右側に引っかかっている
                 // 
@@ -120,6 +126,11 @@ namespace p121029_KinectWatagashi
                         Debug.WriteLine("Falling Rect is flying right");
                     }
                 }
+            }
+            // 輪っかの中に入っていて、輪っかが下端に達した場合
+            else if ( fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU & fallingRect.Y < BOTTOM_END)
+            {
+                fallingRect.state = FallingRect.STATE.SCORING;
             }
         }
     }

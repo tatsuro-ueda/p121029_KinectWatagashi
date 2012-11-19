@@ -10,6 +10,9 @@ using Microsoft.Kinect;
 
 namespace p121029_KinectWatagashi
 {
+    /*
+     * Kinectの映像を描画、左右肩の座標を習得
+     */
     class Kinect : ControllerDevice
     {
         MainWindow mainWindow;

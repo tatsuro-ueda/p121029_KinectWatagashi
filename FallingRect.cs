@@ -9,7 +9,10 @@ using System.Windows.Controls;
 
 namespace p121029_KinectWatagashi
 {
-    class FallingRect
+    /*
+     * 上から落ちてくる輪っか
+     */
+    public class FallingRect
     {
         // 定数
         const int FALLING_RECTANGLE_WIDTH = 400;
@@ -17,6 +20,8 @@ namespace p121029_KinectWatagashi
         const int FALLING_RECTANGLE_DEPTH = 100;
         const int FALLING_RECTANGLE_NUMBER = 200;
         const int FALLING_RECTANGLE_SPEED = 1;
+        const int HORIZONTAL_FLY_SPPED = 10;
+        const int SCORING_WEIGHT_SPEED = 5;
         
         // メンバ変数
         MainWindow mainWindow;
@@ -33,7 +38,7 @@ namespace p121029_KinectWatagashi
 
         public enum STATE
         {
-            NORMAL, FALLING_AROUND_YOU, FLYING_RIGHT, FLYING_LEFT
+            NORMAL, FALLING_AROUND_YOU, FLYING_RIGHT, FLYING_LEFT, SCORING
         }
         public STATE state;
 
@@ -42,6 +47,7 @@ namespace p121029_KinectWatagashi
         {
             mainWindow = m;
             Y = 0;
+            state = STATE.NORMAL;
 
             // xをランダムに決める
             int newX;
@@ -70,6 +76,31 @@ namespace p121029_KinectWatagashi
                 clrName = "blue";
                 break;
             }
+        }
+
+        public void update()
+        {
+            switch (state)
+            {
+                case STATE.NORMAL:
+                case STATE.FALLING_AROUND_YOU:
+                    Y += FALLING_RECTANGLE_SPEED;
+                    break;
+                case STATE.FLYING_LEFT:
+                    X -= HORIZONTAL_FLY_SPPED;
+                    break;
+                case STATE.FLYING_RIGHT:
+                    X += HORIZONTAL_FLY_SPPED;
+                    break;
+                case STATE.SCORING:
+                    weight += SCORING_WEIGHT_SPEED;
+                    break;
+                default:
+                    Debug.WriteLine("state is default");
+                    break;
+            }
+            this.drawBack();
+            this.drawForward();
         }
 
         // 線分を描く
@@ -119,42 +150,5 @@ namespace p121029_KinectWatagashi
             mainWindow.fallingRectFore.Children.Clear();
             line(mainWindow.fallingRectFore, clr, weight, X, Y, X + width, Y);
         }
-  
-        //void drawScoringVE(bool isHandUp) {
-        //    if(isArduino){
-        //        arduino.digitalWrite(RPIN,Arduino.LOW);
-        //        arduino.digitalWrite(GPIN,Arduino.LOW);
-        //        arduino.digitalWrite(BPIN,Arduino.LOW);
-        //    }
-        //    if ( getCounter < (18 / SLOWNESS)) {
-        //        weight += SLOWNESS * 50;
-        //        getCounter++;
-        //        y = height;
-        //    } else if (isHandUp && getCounter < (36 / SLOWNESS)) {
-        //        colorBefore = clr;
-        //        clr = color(255, 255, 255);
-        //        weight += SLOWNESS * 50;
-        //        getCounter++;
-        //        y = height;
-        //    } else if (isHandUp && getCounter < (54 / SLOWNESS)) {
-        //        clr = colorBefore;
-        //        weight += SLOWNESS * 50;
-        //        getCounter++;
-        //        y = height;
-        //    } else {
-        //        isFallingAroundYou = false;
-        //        getCounter = 0;
-        //        y = height + 1;
-        //        println("You get " + clrName + " !");
-        //    }
-        //}
-
-        internal void update()
-        {
-            this.drawBack();
-            this.drawForward();
-            Y += FALLING_RECTANGLE_SPEED;
-        }
-
     }
 }

@@ -94,6 +94,9 @@ namespace p121029_KinectWatagashi
                 case PHASE.PLAYING:
                     foreach (FallingRect f in fallingRects)
                     {
+                        //
+                        // 引数にFallingRectインスタンスfを入れたいが、入れられない
+                        //
                         j.doJudge(c.getLeftTop, c.getRightTop, f);
                         f.update();
                     }

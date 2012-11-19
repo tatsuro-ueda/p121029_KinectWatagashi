@@ -6,11 +6,14 @@ using System.Windows;
 
 namespace p121029_KinectWatagashi
 {
+    /*
+     * Kinectとゲームパッド両用のインターフェース
+     */
     interface ControllerDevice
     {
-        Point getRightTop();
-        Point getLeftTop();
+        public Point getRightTop();
+        public Point getLeftTop();
 
-        void start();
+        public void start();
     }
 }

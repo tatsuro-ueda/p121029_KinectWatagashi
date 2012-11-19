@@ -30,7 +30,7 @@ namespace p121029_KinectWatagashi
             clr = Colors.Black;
             weight = 20;
 
-            DrawRect(x, y);
+            //DrawRect(x, y);
         }
 
         // 線分を描く
