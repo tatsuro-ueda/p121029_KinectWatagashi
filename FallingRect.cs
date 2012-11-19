@@ -31,10 +31,10 @@ namespace p121029_KinectWatagashi
         int weight = FALLING_RECTANGLE_WEIGHT;
         Color clr;
         String clrName;
-        int hitCounter = 0;
-        bool isFlyingRight;
-        bool isFallingAroundYou = false;
-        int getCounter = 0;
+        //int hitCounter = 0;
+        //bool isFlyingRight;
+        //bool isFallingAroundYou = false;
+        //int getCounter = 0;
 
         public enum STATE
         {
@@ -54,7 +54,7 @@ namespace p121029_KinectWatagashi
             Random rnd = new Random();
             do
             {
-                newX = oldX + rnd.Next(1600) - 800;
+                newX = oldX + rnd.Next(1000) - 500;
             } while (newX + width / 2 < -500 | // 枠の中心の座標は-500より大きい
                 500 < newX + width / 2 | // 枠の中心の座標は500より小さい
                 Math.Abs(newX - oldX) < 200); // 前回の落ちた場所との差（絶対値）は200より小さい

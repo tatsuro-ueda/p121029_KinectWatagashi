@@ -80,5 +80,9 @@ namespace p121029_KinectWatagashi
         {
             throw new NotImplementedException();
         }
+
+        public void start()
+        {
+        }
     }
 }

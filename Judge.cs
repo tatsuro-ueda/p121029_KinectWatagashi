@@ -19,6 +19,7 @@ namespace p121029_KinectWatagashi
 
         public Judge()
         {
+            Debug.WriteLine("Judge instance was initialized.");
         }
 
         public void doJudge(Point leftTop, Point rightTop, FallingRect fallingRect)
@@ -73,8 +74,20 @@ namespace p121029_KinectWatagashi
                     {
                         // 右へ飛ぶ
                         fallingRect.state = FallingRect.STATE.FLYING_RIGHT;
-                        Debug.WriteLine("Falling Rect is flying right");
+                        Debug.WriteLine("Falling Rect is flying right.");
                     }
+                }
+                // 人物が輪っかの中に入っている
+                // 
+                //         ++++++++++
+                //    --------------------
+                //         ++++++++++
+                //         ++++++++++
+                // 
+                else if (fallingRect.X <= leftTop.X & rightTop.X <= fallingRect.X + fallingRect.width)
+                {
+                    fallingRect.state = FallingRect.STATE.FALLING_AROUND_YOU;
+                    Debug.WriteLine("Falling Rect is flying around you.");
                 }
                 // 輪っかが人物の左側に引っかかっている
                 // 
@@ -83,7 +96,7 @@ namespace p121029_KinectWatagashi
                 //                   ++++++++++
                 //                   ++++++++++
                 // 
-                else if (fallingRect.X <= leftTop.X & leftTop.X <= fallingRect.X + fallingRect.width)
+                else if (leftTop.X <= fallingRect.X + fallingRect.width & fallingRect.X + fallingRect.width <= rightTop.X)
                 {
                     // 輪っかの内側から体が左に押した場合
                     // 

@@ -41,8 +41,8 @@ namespace p121029_KinectWatagashi
 
         ControllerDevice c;
         DispatcherTimer dispatcherTimer;
-        FallingRect[] fallingRects;
         Judge j;
+        FallingRect f;
 
         public MainWindow()
         {
@@ -72,8 +72,7 @@ namespace p121029_KinectWatagashi
              * テスト
              */
 
-            FallingRect fall = new FallingRect(this, -200);
-            fallingRects = new FallingRect[] { fall };
+            f = new FallingRect(this, -200);
 
             phase = PHASE.PLAYING;
 
@@ -92,14 +91,8 @@ namespace p121029_KinectWatagashi
             switch (phase)
             {
                 case PHASE.PLAYING:
-                    foreach (FallingRect f in fallingRects)
-                    {
-                        //
-                        // 引数にFallingRectインスタンスfを入れたいが、入れられない
-                        //
-                        j.doJudge(c.getLeftTop, c.getRightTop, f);
-                        f.update();
-                    }
+                    j.doJudge(c.getLeftTop(), c.getRightTop(), f);
+                    f.update();
                     break;
             }
         }

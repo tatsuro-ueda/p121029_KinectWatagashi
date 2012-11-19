@@ -11,9 +11,9 @@ namespace p121029_KinectWatagashi
      */
     interface ControllerDevice
     {
-        public Point getRightTop();
-        public Point getLeftTop();
+        Point getRightTop();
+        Point getLeftTop();
 
-        public void start();
+        void start();
     }
 }
