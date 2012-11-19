@@ -72,9 +72,8 @@ namespace p121029_KinectWatagashi
              * テスト
              */
 
-            FallingRect f = new FallingRect(this, -200);
-            fallingRects = new FallingRect[] { f };
-            f.drawForward();
+            FallingRect fall = new FallingRect(this, -200);
+            fallingRects = new FallingRect[] { fall };
 
             phase = PHASE.PLAYING;
 

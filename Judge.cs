@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace p121029_KinectWatagashi
 {
@@ -17,7 +18,7 @@ namespace p121029_KinectWatagashi
         public void doJudge(Point leftTop, Point rightTop, FallingRect fallingRect)
         {
             // 輪っかのy軸は人物の高さより低く、かつ
-            if ( leftTop.Y <= fallingRect.X )
+            if (leftTop.Y <= fallingRect.X)
             {
                 // 輪っかが人物の右側に引っかかっている
                 // 
@@ -26,9 +27,9 @@ namespace p121029_KinectWatagashi
                 //     ++++++++++
                 //     ++++++++++
                 // 
-                if ( leftTop.X <= fallingRect.X & fallingRect.X <= rightTop.X )
+                if (leftTop.X <= fallingRect.X & fallingRect.X <= rightTop.X)
                 {
-                    // 内側から体が左に押した場合
+                    // 輪っかの内側から体が左に押した場合
                     // 
                     //         ++++++++++
                     //        --------------------
@@ -42,12 +43,13 @@ namespace p121029_KinectWatagashi
                     //     ++++++++++
                     //     ++++++++++
                     // 
-                    if ( fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU)
+                    if (fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU)
                     {
                         // 左へ飛ぶ
                         fallingRect.state = FallingRect.STATE.FLYING_LEFT;
+                        Debug.WriteLine("Falling Rect is flying left");
                     }
-                    // 内側から体が左に押した場合
+                    // 輪っかの外側から体が右に押した場合
                     // 
                     //     ++++++++++
                     //     ++++++++++ --------------------
@@ -65,6 +67,7 @@ namespace p121029_KinectWatagashi
                     {
                         // 右へ飛ぶ
                         fallingRect.state = FallingRect.STATE.FLYING_RIGHT;
+                        Debug.WriteLine("Falling Rect is flying right");
                     }
                 }
                 // 輪っかが人物の左側に引っかかっている
@@ -74,27 +77,50 @@ namespace p121029_KinectWatagashi
                 //                   ++++++++++
                 //                   ++++++++++
                 // 
-                else if ( fallingRect.X <= leftTop.X & leftTop.X <= fallingRect.X + fallingRect.width )
+                else if (fallingRect.X <= leftTop.X & leftTop.X <= fallingRect.X + fallingRect.width)
                 {
-
-                
-
-      } else if (
-      // fallがhRctの左側に引っかかっている
-      hRct.x <= x + this.width & x + this.width <= hRct.x + hRct.width
-      ) 
-      {
-        if (isFallingAroundYou) { // 内側から体が押した場合
-          isFlyingRight = true;
-          isFallingAroundYou = false;
-        }
-        else {isFlyingRight = false;} // 外側から体が押した場合
-        hitCounter = 1; // 横へ飛び始める
-      } else if (
-      // 輪の中にうまく入った場合
-      x <= hRct.x & hRct.x + hRct.width <= x + this.width
-      ) 
-
+                    // 輪っかの内側から体が左に押した場合
+                    // 
+                    //        ++++++++++
+                    //       --------------------
+                    //        ++++++++++
+                    //        ++++++++++
+                    // 
+                    //              ↓
+                    // 
+                    //     ++++++++++
+                    //       --------------------
+                    //     ++++++++++
+                    //     ++++++++++
+                    // 
+                    if (fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU)
+                    {
+                        // 左へ飛ぶ
+                        fallingRect.state = FallingRect.STATE.FLYING_LEFT;
+                        Debug.WriteLine("Falling Rect is flying left");
+                    }
+                    // 輪っかの外側から体が右に押した場合
+                    // 
+                    // ++++++++++
+                    // ++++++++++  --------------------
+                    // ++++++++++
+                    // ++++++++++
+                    // 
+                    //              ↓
+                    // 
+                    //     ++++++++++
+                    //       　　　--------------------
+                    //     ++++++++++
+                    //     ++++++++++
+                    // 
+                    else
+                    {
+                        // 右へ飛ぶ
+                        fallingRect.state = FallingRect.STATE.FLYING_RIGHT;
+                        Debug.WriteLine("Falling Rect is flying right");
+                    }
+                }
+            }
         }
     }
 }
