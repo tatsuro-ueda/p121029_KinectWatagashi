@@ -72,7 +72,7 @@ namespace p121029_KinectWatagashi
              * テスト
              */
 
-            f = new FallingRect(this, -200);
+            f = new FallingRect(this, 500);
 
             phase = PHASE.PLAYING;
 

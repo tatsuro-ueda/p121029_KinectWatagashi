@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Kinect;
+using System.Diagnostics;
 
 namespace p121029_KinectWatagashi
 {
@@ -17,8 +18,8 @@ namespace p121029_KinectWatagashi
     {
         MainWindow mainWindow;
         KinectSensor kinect;
-        Point jointRightShoulder;
-        Point jointLeftShoulder;
+        SkeletonPoint jointRightShoulder;
+        SkeletonPoint jointLeftShoulder;
         CoordinateMapper coodinateMapper;
 
         readonly int Bgr32BytesPerPixel = PixelFormats.Bgr32.BitsPerPixel / 8;
@@ -182,11 +183,11 @@ namespace p121029_KinectWatagashi
                         // 右肩と左肩の座標を取得する
                         if (joint.JointType == JointType.ShoulderRight)
                         {
-                            jointRightShoulder = new Point(joint.Position.X, joint.Position.Y);
+                            jointRightShoulder = joint.Position;
                         }
                         else if (joint.JointType == JointType.ShoulderLeft)
                         {
-                            jointLeftShoulder = new Point(joint.Position.X, joint.Position.Y);
+                            jointLeftShoulder = joint.Position;
                         }
 
                         // ジョイントの座標を描く
@@ -226,12 +227,34 @@ namespace p121029_KinectWatagashi
 
         public Point getRightTop()
         {
-            return jointRightShoulder;
+            // スケルトンの座標を、RGBカメラの座標に変換する
+            ColorImagePoint point =
+                coodinateMapper.MapSkeletonPointToColorPoint(jointRightShoulder, kinect.ColorStream.Format);
+
+            // 座標を画面のサイズに変換する
+            point.X = (int)ScaleTo(point.X, kinect.ColorStream.FrameWidth,
+                mainWindow.canvasGamePad.Width);
+            point.Y = (int)ScaleTo(point.Y, kinect.ColorStream.FrameHeight,
+                mainWindow.canvasGamePad.Height);
+
+            Debug.Write("Right X:" + point.X + " Y:" + point.Y);
+            return new Point(point.X, point.Y);
         }
 
         public Point getLeftTop()
         {
-            return jointLeftShoulder;
+            // スケルトンの座標を、RGBカメラの座標に変換する
+            ColorImagePoint point =
+                coodinateMapper.MapSkeletonPointToColorPoint(jointLeftShoulder, kinect.ColorStream.Format);
+
+            // 座標を画面のサイズに変換する
+            point.X = (int)ScaleTo(point.X, kinect.ColorStream.FrameWidth,
+                mainWindow.canvasGamePad.Width);
+            point.Y = (int)ScaleTo(point.Y, kinect.ColorStream.FrameHeight,
+                mainWindow.canvasGamePad.Height);
+
+            Debug.WriteLine("Left X:" + point.X + " Y:" + point.Y);
+            return new Point(point.X, point.Y);
         }
 
         //
