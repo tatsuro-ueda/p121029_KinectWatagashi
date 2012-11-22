@@ -237,7 +237,7 @@ namespace p121029_KinectWatagashi
             point.Y = (int)ScaleTo(point.Y, kinect.ColorStream.FrameHeight,
                 mainWindow.canvasGamePad.Height);
 
-            Debug.Write("Right X:" + point.X + " Y:" + point.Y);
+            //Debug.Write("Right X:" + point.X + " Y:" + point.Y);
             return new Point(point.X, point.Y);
         }
 
@@ -253,7 +253,7 @@ namespace p121029_KinectWatagashi
             point.Y = (int)ScaleTo(point.Y, kinect.ColorStream.FrameHeight,
                 mainWindow.canvasGamePad.Height);
 
-            Debug.WriteLine("Left X:" + point.X + " Y:" + point.Y);
+            Debug.Write(" Left X:" + point.X + " Y:" + point.Y);
             return new Point(point.X, point.Y);
         }
 

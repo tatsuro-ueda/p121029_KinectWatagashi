@@ -15,7 +15,7 @@ namespace p121029_KinectWatagashi
     class Judge
     {
         // 定数
-        const int BOTTOM_END = -350;
+        const int BOTTOM_END = 700;
 
         public Judge()
         {
@@ -25,7 +25,8 @@ namespace p121029_KinectWatagashi
         public void doJudge(Point leftTop, Point rightTop, FallingRect fallingRect)
         {
             // 輪っかのy軸は人物の高さより低く、かつ下端より高い
-            if (leftTop.Y <= fallingRect.X & fallingRect.Y >= BOTTOM_END)
+            // 人物＜輪っか＜端
+            if (leftTop.Y <= fallingRect.Y & fallingRect.Y <= BOTTOM_END)
             {
                 // 輪っかが人物の右側に引っかかっている
                 // 
@@ -54,7 +55,7 @@ namespace p121029_KinectWatagashi
                     {
                         // 左へ飛ぶ
                         fallingRect.state = FallingRect.STATE.FLYING_LEFT;
-                        Debug.WriteLine("Falling Rect is flying left");
+                        Debug.WriteLine("*****Falling Rect is flying left*****");
                     }
                     // 輪っかの外側から体が右に押した場合
                     // 
@@ -74,7 +75,7 @@ namespace p121029_KinectWatagashi
                     {
                         // 右へ飛ぶ
                         fallingRect.state = FallingRect.STATE.FLYING_RIGHT;
-                        Debug.WriteLine("Falling Rect is flying right.");
+                        Debug.WriteLine("*****Falling Rect is flying right*****");
                     }
                 }
                 // 人物が輪っかの中に入っている
@@ -87,7 +88,7 @@ namespace p121029_KinectWatagashi
                 else if (fallingRect.X <= leftTop.X & rightTop.X <= fallingRect.X + fallingRect.width)
                 {
                     fallingRect.state = FallingRect.STATE.FALLING_AROUND_YOU;
-                    Debug.WriteLine("Falling Rect is flying around you.");
+                    Debug.WriteLine("*****Falling Rect is flying around you*****");
                 }
                 // 輪っかが人物の左側に引っかかっている
                 // 
@@ -116,7 +117,7 @@ namespace p121029_KinectWatagashi
                     {
                         // 左へ飛ぶ
                         fallingRect.state = FallingRect.STATE.FLYING_LEFT;
-                        Debug.WriteLine("Falling Rect is flying left");
+                        Debug.WriteLine("*****Falling Rect is flying left*****");
                     }
                     // 輪っかの外側から体が右に押した場合
                     // 
@@ -136,12 +137,13 @@ namespace p121029_KinectWatagashi
                     {
                         // 右へ飛ぶ
                         fallingRect.state = FallingRect.STATE.FLYING_RIGHT;
-                        Debug.WriteLine("Falling Rect is flying right");
+                        Debug.WriteLine("*****Falling Rect is flying right*****");
                     }
                 }
             }
             // 輪っかの中に入っていて、輪っかが下端に達した場合
-            else if ( fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU & fallingRect.Y < BOTTOM_END)
+            // 下端＜輪っか
+            else if (fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU & BOTTOM_END < fallingRect.Y)
             {
                 fallingRect.state = FallingRect.STATE.SCORING;
             }

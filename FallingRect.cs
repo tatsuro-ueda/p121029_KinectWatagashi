@@ -101,6 +101,7 @@ namespace p121029_KinectWatagashi
             }
             this.drawBack();
             this.drawForward();
+            Debug.WriteLine("fallingRect.X: " + X + " Y: " + Y);
         }
 
         // 線分を描く
@@ -142,6 +143,29 @@ namespace p121029_KinectWatagashi
                 Y - FALLING_RECTANGLE_DEPTH,
                 X + width,
                 Y);
+
+            //mainWindow.canvasGamePad.Children.Clear();
+
+            //// 「／」
+            //line(mainWindow.canvasGamePad, clr, weight,
+            //    X,
+            //    Y,
+            //    X + FALLING_RECTANGLE_DEPTH,
+            //    Y - FALLING_RECTANGLE_DEPTH);
+
+            //// 「─」（後ろ）
+            //line(mainWindow.canvasGamePad, clr, weight,
+            //    X + FALLING_RECTANGLE_DEPTH,
+            //    Y - FALLING_RECTANGLE_DEPTH,
+            //    X + width - FALLING_RECTANGLE_DEPTH,
+            //    Y - FALLING_RECTANGLE_DEPTH);
+
+            //// 「＼」
+            //line(mainWindow.canvasGamePad, clr, weight,
+            //    X + width - FALLING_RECTANGLE_DEPTH,
+            //    Y - FALLING_RECTANGLE_DEPTH,
+            //    X + width,
+            //    Y);
         }
 
         // 人物の手前の線分を描く
@@ -149,6 +173,9 @@ namespace p121029_KinectWatagashi
         {
             mainWindow.fallingRectFore.Children.Clear();
             line(mainWindow.fallingRectFore, clr, weight, X, Y, X + width, Y);
+
+            //mainWindow.canvasGamePad.Children.Clear();
+            //line(mainWindow.canvasGamePad, clr, weight, X, Y, X + width, Y);
         }
     }
 }

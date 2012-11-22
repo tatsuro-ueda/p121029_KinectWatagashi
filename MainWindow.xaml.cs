@@ -91,7 +91,10 @@ namespace p121029_KinectWatagashi
             switch (phase)
             {
                 case PHASE.PLAYING:
-                    j.doJudge(c.getLeftTop(), c.getRightTop(), f);
+                    if (f.state == FallingRect.STATE.FALLING_AROUND_YOU || f.state == FallingRect.STATE.NORMAL)
+                    {
+                        j.doJudge(c.getLeftTop(), c.getRightTop(), f);
+                    }
                     f.update();
                     break;
             }
