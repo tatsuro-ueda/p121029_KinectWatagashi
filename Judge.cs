@@ -146,6 +146,22 @@ namespace p121029_KinectWatagashi
             else if (fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU & BOTTOM_END < fallingRect.Y)
             {
                 fallingRect.state = FallingRect.STATE.SCORING;
+                Debug.WriteLine("*****Scoring*****");
+                switch (fallingRect.color)
+                {
+                    case FallingRect.COLOR.RED:
+                        // 赤のザラメを出す
+                        Debug.WriteLine("*****RED*****");
+                        break;
+                    case FallingRect.COLOR.GREEN:
+                        // 緑のザラメを出す
+                        Debug.WriteLine("*****GREEN*****");
+                        break;
+                    case FallingRect.COLOR.BLUE:
+                        // 青のザラメを出す
+                        Debug.WriteLine("*****BLUE*****");
+                        break;
+                }
             }
         }
     }

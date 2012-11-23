@@ -19,9 +19,9 @@ namespace p121029_KinectWatagashi
         const int FALLING_RECTANGLE_WEIGHT = 20;
         const int FALLING_RECTANGLE_DEPTH = 100;
         const int FALLING_RECTANGLE_NUMBER = 200;
-        const int FALLING_RECTANGLE_SPEED = 1;
-        const int HORIZONTAL_FLY_SPPED = 10;
-        const int SCORING_WEIGHT_SPEED = 5;
+        const int FALLING_RECTANGLE_SPEED = 5;
+        const int HORIZONTAL_FLY_SPPED = 50;
+        const int SCORING_WEIGHT_SPEED = 200;
         
         // メンバ変数
         MainWindow mainWindow;
@@ -29,12 +29,13 @@ namespace p121029_KinectWatagashi
         public int Y;
         public int width = FALLING_RECTANGLE_WIDTH;
         int weight = FALLING_RECTANGLE_WEIGHT;
-        Color clr;
-        String clrName;
-        //int hitCounter = 0;
-        //bool isFlyingRight;
-        //bool isFallingAroundYou = false;
-        //int getCounter = 0;
+
+        public enum COLOR
+        {
+            RED, GREEN, BLUE
+        }
+        public COLOR color;
+        Color _c;
 
         public enum STATE
         {
@@ -63,18 +64,18 @@ namespace p121029_KinectWatagashi
 
             // 色を決める
             switch((int)rnd.Next(3)) {
-              case 0:
-                clr = Colors.Red;
-                clrName = "red";
-                break;
-              case 1:
-                clr = Colors.Green;
-                clrName = "green";
-                break;
-              case 2:
-                clr = Colors.Blue;
-                clrName = "blue";
-                break;
+                case 0:
+                    color = COLOR.RED;
+                    _c = Colors.Red;
+                    break;
+                case 1:
+                    color = COLOR.GREEN;
+                    _c = Colors.Green;
+                    break;
+                case 2:
+                    color = COLOR.BLUE;
+                    _c = Colors.Blue;
+                    break;
             }
         }
 
@@ -101,7 +102,7 @@ namespace p121029_KinectWatagashi
             }
             this.drawBack();
             this.drawForward();
-            Debug.WriteLine("fallingRect.X: " + X + " Y: " + Y);
+            //Debug.WriteLine("fallingRect.X: " + X + " Y: " + Y);
         }
 
         // 線分を描く
@@ -124,58 +125,32 @@ namespace p121029_KinectWatagashi
             mainWindow.fallingRectBack.Children.Clear();
 
             // 「／」
-            line(mainWindow.fallingRectBack, clr, weight,
+            line(mainWindow.fallingRectBack, _c, weight,
                 X,
                 Y,
                 X + FALLING_RECTANGLE_DEPTH,
                 Y - FALLING_RECTANGLE_DEPTH);
 
             // 「─」（後ろ）
-            line(mainWindow.fallingRectBack, clr, weight,
+            line(mainWindow.fallingRectBack, _c, weight,
                 X + FALLING_RECTANGLE_DEPTH,
                 Y - FALLING_RECTANGLE_DEPTH,
                 X + width - FALLING_RECTANGLE_DEPTH,
                 Y - FALLING_RECTANGLE_DEPTH);
 
             // 「＼」
-            line(mainWindow.fallingRectBack, clr, weight,
+            line(mainWindow.fallingRectBack, _c, weight,
                 X + width - FALLING_RECTANGLE_DEPTH,
                 Y - FALLING_RECTANGLE_DEPTH,
                 X + width,
                 Y);
-
-            //mainWindow.canvasGamePad.Children.Clear();
-
-            //// 「／」
-            //line(mainWindow.canvasGamePad, clr, weight,
-            //    X,
-            //    Y,
-            //    X + FALLING_RECTANGLE_DEPTH,
-            //    Y - FALLING_RECTANGLE_DEPTH);
-
-            //// 「─」（後ろ）
-            //line(mainWindow.canvasGamePad, clr, weight,
-            //    X + FALLING_RECTANGLE_DEPTH,
-            //    Y - FALLING_RECTANGLE_DEPTH,
-            //    X + width - FALLING_RECTANGLE_DEPTH,
-            //    Y - FALLING_RECTANGLE_DEPTH);
-
-            //// 「＼」
-            //line(mainWindow.canvasGamePad, clr, weight,
-            //    X + width - FALLING_RECTANGLE_DEPTH,
-            //    Y - FALLING_RECTANGLE_DEPTH,
-            //    X + width,
-            //    Y);
         }
 
         // 人物の手前の線分を描く
         public void drawForward()
         {
             mainWindow.fallingRectFore.Children.Clear();
-            line(mainWindow.fallingRectFore, clr, weight, X, Y, X + width, Y);
-
-            //mainWindow.canvasGamePad.Children.Clear();
-            //line(mainWindow.canvasGamePad, clr, weight, X, Y, X + width, Y);
+            line(mainWindow.fallingRectFore, _c, weight, X, Y, X + width, Y);
         }
     }
 }
