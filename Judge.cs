@@ -7,6 +7,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
 
+using Firmata.NET;
+
 namespace p121029_KinectWatagashi
 {
     /*
@@ -41,10 +43,11 @@ namespace p121029_KinectWatagashi
             }
         }
 
-        public void doJudge(Point leftTop, Point rightTop, FallingRect fallingRect)
+        public void doJudge(Point leftTop, Point rightTop, FallingRect fallingRect, Arduino arduino)
         {
             if (fallingRect.state == FallingRect.STATE.NORMAL || fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU)
             {
+
                 // 輪っかのy軸は人物の高さより低く、かつ下端より高い
                 // 人物＜輪っか＜端
                 if (leftTop.Y <= fallingRect.Y & fallingRect.Y <= MainWindow.HEIGHT)
@@ -171,14 +174,17 @@ namespace p121029_KinectWatagashi
                     {
                         case FallingRect.COLOR.RED:
                             // 赤のザラメを出す
+                            arduino.digitalWrite(13, Arduino.HIGH);
                             Debug.WriteLine("*****RED*****");
                             break;
                         case FallingRect.COLOR.GREEN:
                             // 緑のザラメを出す
+                            arduino.digitalWrite(13, Arduino.HIGH);
                             Debug.WriteLine("*****GREEN*****");
                             break;
                         case FallingRect.COLOR.BLUE:
                             // 青のザラメを出す
+                            arduino.digitalWrite(13, Arduino.HIGH);
                             Debug.WriteLine("*****BLUE*****");
                             break;
                     }
@@ -196,6 +202,57 @@ namespace p121029_KinectWatagashi
                     //イベントの発生
                     OnFallenBottom(e);
                 }
+            }
+            else if (fallingRect.state == FallingRect.STATE.FLYING_LEFT)
+            {
+                if (fallingRect.X + fallingRect.width < 0)
+                {
+                    fallingRect.state = FallingRect.STATE.DISAPPEARED;
+
+                    //返すデータの設定
+                    FallenBottomEventArgs e = new FallenBottomEventArgs();
+                    e.FallenX = MainWindow.WIDTH / 2;
+                    e.FallingRect = fallingRect;
+                    //イベントの発生
+                    OnFallenBottom(e);
+                }
+            }
+            else if (fallingRect.state == FallingRect.STATE.FLYING_RIGHT)
+            {
+                if (MainWindow.WIDTH < fallingRect.X)
+                {
+                    fallingRect.state = FallingRect.STATE.DISAPPEARED;
+
+                    //返すデータの設定
+                    FallenBottomEventArgs e = new FallenBottomEventArgs();
+                    e.FallenX = MainWindow.WIDTH / 2;
+                    e.FallingRect = fallingRect;
+                    //イベントの発生
+                    OnFallenBottom(e);
+                }
+            }
+            else if (fallingRect.state == FallingRect.STATE.SCORING)
+            {
+                arduino.digitalWrite(13, Arduino.HIGH);
+
+                if (MainWindow.HEIGHT < fallingRect.weight / 2)
+                {
+                    fallingRect.state = FallingRect.STATE.DISAPPEARED;
+
+                    //返すデータの設定
+                    FallenBottomEventArgs e = new FallenBottomEventArgs();
+                    e.FallenX = fallingRect.X;
+                    e.FallingRect = fallingRect;
+                    //イベントの発生
+                    OnFallenBottom(e);
+                }
+            }
+            else if (fallingRect.state == FallingRect.STATE.DISAPPEARED)
+            {
+            }
+            else
+            {
+                Debug.WriteLine("Judge#doJudgeの場合分けに該当しない");
             }
         }
     }

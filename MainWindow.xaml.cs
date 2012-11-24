@@ -16,6 +16,8 @@ using System.Diagnostics;
 using System.Windows.Threading;
 using System.Collections;
 
+using Firmata.NET;
+
 namespace p121029_KinectWatagashi
 {
     /// <summary>
@@ -23,6 +25,7 @@ namespace p121029_KinectWatagashi
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const bool WITH_ARDUINO = false;
         public const int WIDTH = 960;
         public const int HEIGHT = 720;
 
@@ -47,6 +50,8 @@ namespace p121029_KinectWatagashi
         DispatcherTimer dispatcherTimer;
         Judge j;
         ArrayList fallingRects;
+
+        Arduino arduino;
 
         public MainWindow()
         {
@@ -74,6 +79,16 @@ namespace p121029_KinectWatagashi
             c.start();
             fallingRects = new ArrayList();
 
+            if (WITH_ARDUINO)
+            {
+                arduino = new Arduino("COM5", 57600);
+                arduino.pinMode(13, Arduino.OUTPUT);
+            }
+            else
+            {
+                arduino = null;
+            }
+
             /*
              * テスト
              */
@@ -96,6 +111,7 @@ namespace p121029_KinectWatagashi
         void j_FallenBottom(object sender, FallenBottomEventArgs e)
         {
             FallingRect f = new FallingRect(this, e.FallenX);
+            f.state = FallingRect.STATE.NORMAL;
             fallingRects.Add(f);
             
         }
@@ -108,7 +124,7 @@ namespace p121029_KinectWatagashi
                     for ( int i = 0; i < fallingRects.Count; i++ )
                     {
                         FallingRect f = (FallingRect)fallingRects[i];
-                        j.doJudge(c.getLeftTop(), c.getRightTop(), f);
+                        j.doJudge(c.getLeftTop(), c.getRightTop(), f, arduino);
                         f.update();
                     }
                 break;

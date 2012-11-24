@@ -28,7 +28,7 @@ namespace p121029_KinectWatagashi
         public int X;
         public int Y;
         public int width = FALLING_RECTANGLE_WIDTH;
-        int weight = FALLING_RECTANGLE_WEIGHT;
+        public int weight = FALLING_RECTANGLE_WEIGHT;
 
         public enum COLOR
         {
