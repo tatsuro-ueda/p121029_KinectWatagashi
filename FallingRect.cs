@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Windows.Controls;
+using System.Windows;
 
 namespace p121029_KinectWatagashi
 {
@@ -118,6 +119,24 @@ namespace p121029_KinectWatagashi
                 Y1 = y1,
                 X2 = x2,
                 Y2 = y2
+            });
+
+            // 円を描く
+            canvas.Children.Add(new Ellipse()
+            {
+                Fill = new SolidColorBrush(color),
+                Margin = new Thickness(x1 - weight/2, y1 - weight/2, 0, 0),
+                Width = weight,
+                Height = weight,
+            });
+
+            // 円を描く
+            canvas.Children.Add(new Ellipse()
+            {
+                Fill = new SolidColorBrush(color),
+                Margin = new Thickness(x2 - weight / 2, y2 - weight / 2, 0, 0),
+                Width = weight,
+                Height = weight,
             });
         }
 
