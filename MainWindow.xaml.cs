@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Microsoft.Kinect;
 using System.Diagnostics;
 using System.Windows.Threading;
+using System.Collections;
 
 namespace p121029_KinectWatagashi
 {
@@ -22,6 +23,9 @@ namespace p121029_KinectWatagashi
     /// </summary>
     public partial class MainWindow : Window
     {
+        public const int WIDTH = 960;
+        public const int HEIGHT = 720;
+
         enum CONTROLLER_DEVICE
         {
             KINECT, 
@@ -42,7 +46,7 @@ namespace p121029_KinectWatagashi
         ControllerDevice c;
         DispatcherTimer dispatcherTimer;
         Judge j;
-        FallingRect f;
+        ArrayList fallingRects;
 
         public MainWindow()
         {
@@ -65,14 +69,17 @@ namespace p121029_KinectWatagashi
             }
 
             j = new Judge();
+            j.FallenBottom += new Judge.FallenBottomEventHandler(j_FallenBottom);
             InitializeComponent();
             c.start();
+            fallingRects = new ArrayList();
 
             /*
              * テスト
              */
 
-            f = new FallingRect(this, 500);
+            FallingRect f = new FallingRect(this, 500);
+            fallingRects.Add(f);
 
             phase = PHASE.PLAYING;
 
@@ -81,9 +88,16 @@ namespace p121029_KinectWatagashi
              */
 
             dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
-            dispatcherTimer.Interval = new TimeSpan(500000);
+            dispatcherTimer.Interval = new TimeSpan(500000); // 500000（ゼロが5つで20分の1秒）
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Start();
+        }
+
+        void j_FallenBottom(object sender, FallenBottomEventArgs e)
+        {
+            FallingRect f = new FallingRect(this, e.FallenX);
+            fallingRects.Add(f);
+            
         }
 
         void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -91,18 +105,19 @@ namespace p121029_KinectWatagashi
             switch (phase)
             {
                 case PHASE.PLAYING:
-                    if (f.state == FallingRect.STATE.FALLING_AROUND_YOU || f.state == FallingRect.STATE.NORMAL)
+                    for ( int i = 0; i < fallingRects.Count; i++ )
                     {
+                        FallingRect f = (FallingRect)fallingRects[i];
                         j.doJudge(c.getLeftTop(), c.getRightTop(), f);
+                        f.update();
                     }
-                    f.update();
-                    break;
+                break;
             }
         }
 
         private void Window_Closing(object sender,
             System.ComponentModel.CancelEventArgs e)
         {
-        }            
+        }
     }
 }

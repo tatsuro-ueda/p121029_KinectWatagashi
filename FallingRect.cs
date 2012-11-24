@@ -17,7 +17,7 @@ namespace p121029_KinectWatagashi
         // 定数
         const int FALLING_RECTANGLE_WIDTH = 400;
         const int FALLING_RECTANGLE_WEIGHT = 20;
-        const int FALLING_RECTANGLE_DEPTH = 100;
+        public const int FALLING_RECTANGLE_DEPTH = 100; // Judgeクラスで輪っかの上端の座標が必要になる
         const int FALLING_RECTANGLE_NUMBER = 200;
         const int FALLING_RECTANGLE_SPEED = 5;
         const int HORIZONTAL_FLY_SPPED = 50;
@@ -39,7 +39,7 @@ namespace p121029_KinectWatagashi
 
         public enum STATE
         {
-            NORMAL, FALLING_AROUND_YOU, FLYING_RIGHT, FLYING_LEFT, SCORING
+            NORMAL, FALLING_AROUND_YOU, FLYING_RIGHT, FLYING_LEFT, SCORING, DISAPPEARED
         }
         public STATE state;
 
@@ -55,9 +55,9 @@ namespace p121029_KinectWatagashi
             Random rnd = new Random();
             do
             {
-                newX = oldX + rnd.Next(1000) - 500;
-            } while (newX + width / 2 < -500 | // 枠の中心の座標は-500より大きい
-                500 < newX + width / 2 | // 枠の中心の座標は500より小さい
+                newX = oldX + rnd.Next(MainWindow.WIDTH) - (MainWindow.WIDTH / 2);
+            } while (newX < 0 | // 輪っか左端の座標は0より大きい
+                MainWindow.WIDTH < newX + width | // 輪っかの右端の座標は960より小さい
                 Math.Abs(newX - oldX) < 200); // 前回の落ちた場所との差（絶対値）は200より小さい
             Debug.WriteLine(newX);
             X = newX;
@@ -95,6 +95,8 @@ namespace p121029_KinectWatagashi
                     break;
                 case STATE.SCORING:
                     weight += SCORING_WEIGHT_SPEED;
+                    break;
+                case STATE.DISAPPEARED:
                     break;
                 default:
                     Debug.WriteLine("state is default");
