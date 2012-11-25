@@ -20,9 +20,9 @@ namespace p121029_KinectWatagashi
         const int FALLING_RECTANGLE_WEIGHT = 20;
         public const int FALLING_RECTANGLE_DEPTH = 100; // Judgeクラスで輪っかの上端の座標が必要になる
         const int FALLING_RECTANGLE_NUMBER = 200;
-        const int FALLING_RECTANGLE_SPEED = 5;
+        const int FALLING_RECTANGLE_SPEED = 10;
         const int HORIZONTAL_FLY_SPPED = 50;
-        const int SCORING_WEIGHT_SPEED = 200;
+        const int SCORING_WEIGHT_SPEED = 100;
         
         // メンバ変数
         MainWindow mainWindow;

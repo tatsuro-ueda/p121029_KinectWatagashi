@@ -73,15 +73,19 @@ namespace p121029_KinectWatagashi
 
         public Point getRightTop()
         {
-            throw new NotImplementedException();
+            return new Point(x, y);
         }
 
         public Point getLeftTop()
         {
-            throw new NotImplementedException();
+            return new Point(x + width, y);
         }
 
         public void start()
+        {
+        }
+
+        public void stop()
         {
         }
     }

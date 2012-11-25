@@ -15,5 +15,6 @@ namespace p121029_KinectWatagashi
         Point getLeftTop();
 
         void start();
+        void stop();
     }
 }

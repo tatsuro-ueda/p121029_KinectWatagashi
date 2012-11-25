@@ -145,9 +145,12 @@ namespace p121029_KinectWatagashi
                 // プレイヤーを検出した座標だけ、RGBカメラの画像を使う
                 if (player != 0)
                 {
-                    outputColor[colorIndex] = colorPixel[colorIndex];
-                    outputColor[colorIndex + 1] = colorPixel[colorIndex + 1];
-                    outputColor[colorIndex + 2] = colorPixel[colorIndex + 2];
+                    outputColor[colorIndex] = 0;
+                    outputColor[colorIndex + 1] = 0;
+                    outputColor[colorIndex + 2] = 0;
+                    //outputColor[colorIndex] = colorPixel[colorIndex];
+                    //outputColor[colorIndex + 1] = colorPixel[colorIndex + 1];
+                    //outputColor[colorIndex + 2] = colorPixel[colorIndex + 2];
                     outputColor[colorIndex + 3] = 255;
                 }
             }
@@ -257,9 +260,15 @@ namespace p121029_KinectWatagashi
             return new Point(point.X, point.Y);
         }
 
-        //
-        // 以下は未使用
-        //
+        public void stop()
+        {
+            kinect.Stop();
+        }
+
+
+        /********************************
+         * 以下は未使用
+         ********************************/
 
         public void kinect_ColorFrameReady(object sender, ColorImageFrameReadyEventArgs e)
         {

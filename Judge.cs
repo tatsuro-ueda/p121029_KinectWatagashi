@@ -123,45 +123,45 @@ namespace p121029_KinectWatagashi
                     // 
                     else if (leftTop.X <= fallingRect.X + fallingRect.width & fallingRect.X + fallingRect.width <= rightTop.X)
                     {
-                        // 輪っかの内側から体が左に押した場合
+                        // 輪っかの内側から体が右に押した場合
                         // 
-                        //        ++++++++++
-                        //       --------------------
-                        //        ++++++++++
-                        //        ++++++++++
+                        //          ++++++++++
+                        // --------------------
+                        //          ++++++++++
+                        //          ++++++++++
                         // 
                         //              ↓
                         // 
-                        //     ++++++++++
-                        //       --------------------
-                        //     ++++++++++
-                        //     ++++++++++
+                        //            ++++++++++
+                        // --------------------
+                        //            ++++++++++
+                        //            ++++++++++
                         // 
                         if (fallingRect.state == FallingRect.STATE.FALLING_AROUND_YOU)
-                        {
-                            // 左へ飛ぶ
-                            fallingRect.state = FallingRect.STATE.FLYING_LEFT;
-                            Debug.WriteLine("*****Falling Rect is flying left*****");
-                        }
-                        // 輪っかの外側から体が右に押した場合
-                        // 
-                        // ++++++++++
-                        // ++++++++++  --------------------
-                        // ++++++++++
-                        // ++++++++++
-                        // 
-                        //              ↓
-                        // 
-                        //     ++++++++++
-                        //       　　　--------------------
-                        //     ++++++++++
-                        //     ++++++++++
-                        // 
-                        else
                         {
                             // 右へ飛ぶ
                             fallingRect.state = FallingRect.STATE.FLYING_RIGHT;
                             Debug.WriteLine("*****Falling Rect is flying right*****");
+                        }
+                        // 輪っかの外側から体が左に押した場合
+                        // 
+                        //                      ++++++++++
+                        // -------------------- ++++++++++
+                        //                      ++++++++++
+                        //                      ++++++++++
+                        // 
+                        //              ↓
+                        // 
+                        //                    ++++++++++
+                        // --------------------
+                        //                    ++++++++++
+                        //                    ++++++++++
+                        // 
+                        else
+                        {
+                            // 左へ飛ぶ
+                            fallingRect.state = FallingRect.STATE.FLYING_LEFT;
+                            Debug.WriteLine("*****Falling Rect is flying left*****");
                         }
                     }
                 }
@@ -174,17 +174,26 @@ namespace p121029_KinectWatagashi
                     {
                         case FallingRect.COLOR.RED:
                             // 赤のザラメを出す
-                            arduino.digitalWrite(13, Arduino.HIGH);
+                            if (arduino != null)
+                            {
+                                arduino.digitalWrite(8, Arduino.HIGH);
+                            }
                             Debug.WriteLine("*****RED*****");
                             break;
                         case FallingRect.COLOR.GREEN:
                             // 緑のザラメを出す
-                            arduino.digitalWrite(13, Arduino.HIGH);
+                            if (arduino != null)
+                            {
+                            arduino.digitalWrite(9, Arduino.HIGH);
+                            }
                             Debug.WriteLine("*****GREEN*****");
                             break;
                         case FallingRect.COLOR.BLUE:
                             // 青のザラメを出す
-                            arduino.digitalWrite(13, Arduino.HIGH);
+                            if (arduino != null)
+                            {
+                            arduino.digitalWrite(10, Arduino.HIGH);
+                            }
                             Debug.WriteLine("*****BLUE*****");
                             break;
                     }
@@ -233,12 +242,37 @@ namespace p121029_KinectWatagashi
             }
             else if (fallingRect.state == FallingRect.STATE.SCORING)
             {
-                arduino.digitalWrite(13, Arduino.HIGH);
+                if (arduino != null)
+                {
+                    arduino.digitalWrite(13, Arduino.HIGH);
+                }
 
                 if (MainWindow.HEIGHT < fallingRect.weight / 2)
                 {
                     fallingRect.state = FallingRect.STATE.DISAPPEARED;
 
+                    if (arduino != null)
+                    {
+                        switch (fallingRect.color)
+                        {
+                            case FallingRect.COLOR.RED:
+                                arduino.digitalWrite(8, Arduino.LOW);
+                                Debug.WriteLine("Arduinoの8番をLOWに");
+                                break;
+                            case FallingRect.COLOR.GREEN:
+                                arduino.digitalWrite(9, Arduino.LOW);
+                                Debug.WriteLine("Arduinoの9番をLOWに");
+                                break;
+                            case FallingRect.COLOR.BLUE:
+                                arduino.digitalWrite(10, Arduino.LOW);
+                                Debug.WriteLine("Arduinoの10番をLOWに");
+                                break;
+                            default:
+                                Debug.WriteLine("scoringの終了時のfallingRect.colorがおかしい");
+                                break;
+                        }
+
+                    }
                     //返すデータの設定
                     FallenBottomEventArgs e = new FallenBottomEventArgs();
                     e.FallenX = fallingRect.X;

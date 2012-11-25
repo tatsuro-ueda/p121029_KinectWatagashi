@@ -25,9 +25,11 @@ namespace p121029_KinectWatagashi
     /// </summary>
     public partial class MainWindow : Window
     {
-        public const bool WITH_ARDUINO = false;
+        //public const bool WITH_ARDUINO = false;
+        public const bool WITH_ARDUINO = true;
         public const int WIDTH = 960;
         public const int HEIGHT = 720;
+        const string PORT = "COM3";
 
         enum CONTROLLER_DEVICE
         {
@@ -81,7 +83,10 @@ namespace p121029_KinectWatagashi
 
             if (WITH_ARDUINO)
             {
-                arduino = new Arduino("COM5", 57600);
+                arduino = new Arduino(PORT, 57600);
+                arduino.pinMode(8, Arduino.OUTPUT);
+                arduino.pinMode(9, Arduino.OUTPUT);
+                arduino.pinMode(10, Arduino.OUTPUT);
                 arduino.pinMode(13, Arduino.OUTPUT);
             }
             else
@@ -105,7 +110,12 @@ namespace p121029_KinectWatagashi
             dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
             dispatcherTimer.Interval = new TimeSpan(500000); // 500000（ゼロが5つで20分の1秒）
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Start();
+
+            /*
+             * スペースキーで開始、停止
+             */
+
+            KeyDown += new KeyEventHandler(MainWindow_KeyDown);
         }
 
         void j_FallenBottom(object sender, FallenBottomEventArgs e)
@@ -131,9 +141,25 @@ namespace p121029_KinectWatagashi
             }
         }
 
-        private void Window_Closing(object sender,
+        void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                if (dispatcherTimer.IsEnabled)
+                {
+                    dispatcherTimer.Stop();
+                }
+                else
+                {
+                    dispatcherTimer.Start();
+                }
+            }
+        }
+
+        public void Window_Closing(object sender,
             System.ComponentModel.CancelEventArgs e)
         {
+            c.stop();
         }
     }
 }
